@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TaskFlow - Task Manager Application
+
+A simple task management app built with Next.js, React Query, and JSON Server.
+
+## Team Members
+
+- [Your Name Here]
+
+## Tech Stack
+
+- Next.js 14+ (App Router)
+- React Query (TanStack Query)
+- shadcn/ui components
+- JSON Server
+- TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start JSON Server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm run server
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This will start the API at http://localhost:3001
 
-## Learn More
+### 3. Start the development server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open http://localhost:3000 to view the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Pages
 
-## Deploy on Vercel
+- `/` - Dashboard with overview stats
+- `/tasks` - List of all tasks with filtering
+- `/tasks/[id]` - Task detail page
+- `/tasks/new` - Create new task form (UI only)
+- `/projects` - List of all projects
+- `/projects/[id]` - Project detail with tasks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- GET /projects - all projects
+- GET /projects/:id - single project
+- GET /tasks - all tasks
+- GET /tasks/:id - single task
+- GET /tasks?projectId=:id - tasks by project
