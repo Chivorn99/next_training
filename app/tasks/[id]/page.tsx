@@ -1,29 +1,24 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTask, getProject, updateSubtask } from "@/lib/api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Spinner } from "@/components/ui/spinner";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { use } from "react";
+import { getTask, getProject, deleteTask } from "@/lib/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { DeleteTaskDialog } from "@/components/delete-task-dialog";
+import { Pencil } from "lucide-react";
 
-export default function TaskDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+export default function TaskDetailPage() {
+  const router = useRouter();
+  const params = useParams();
+  const taskId = params.id as string;
   const queryClient = useQueryClient();
 
-  const {
-    data: task,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["task", id],
-    queryFn: () => getTask(id),
+  const { data: task, isLoading: isLoadingTask } = useQuery({
+    queryKey: ["task", taskId],
+    queryFn: () => getTask(taskId),
   });
 
   const { data: project } = useQuery({
@@ -32,178 +27,103 @@ export default function TaskDetailPage({
     enabled: !!task?.projectId,
   });
 
-  const subtaskMutation = useMutation({
-    mutationFn: (subtasks: { id: string; title: string; completed: boolean }[]) =>
-      updateSubtask(id, subtasks),
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteTask(taskId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["task", id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      router.push("/tasks");
     },
   });
 
-  const handleSubtaskToggle = (subtaskId: string) => {
-    if (!task) return;
-    const updatedSubtasks = task.subtasks.map((s) =>
-      s.id === subtaskId ? { ...s, completed: !s.completed } : s
-    );
-    subtaskMutation.mutate(updatedSubtasks);
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Spinner className="h-8 w-8" />
-        <span className="ml-2">Loading task...</span>
-      </div>
-    );
+  if (isLoadingTask) {
+    return <div className="p-6">Loading...</div>;
   }
 
-  if (error || !task) {
-    return (
-      <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-        <h2 className="font-bold">Error loading task</h2>
-        <p>Task not found or server error</p>
-        <Link href="/tasks" className="underline">
-          Back to tasks
-        </Link>
-      </div>
-    );
+  if (!task) {
+    return <div className="p-6">Task not found</div>;
   }
+
+  const priorityColors = {
+    low: "bg-green-100 text-green-800",
+    medium: "bg-yellow-100 text-yellow-800",
+    high: "bg-red-100 text-red-800",
+  };
+
+  const statusColors = {
+    todo: "bg-gray-100 text-gray-800",
+    "in-progress": "bg-blue-100 text-blue-800",
+    done: "bg-green-100 text-green-800",
+  };
 
   return (
-    <div>
-      <div className="mb-4">
-        <Link href="/tasks" className="text-muted-foreground hover:underline">
-          ← Back to Tasks
-        </Link>
-      </div>
-
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">{task.title}</h1>
-          <div className="flex gap-2 mt-2">
-            <Badge
-              variant={
-                task.status === "done"
-                  ? "default"
-                  : task.status === "in-progress"
-                    ? "secondary"
-                    : "outline"
-              }
-            >
-              {task.status}
-            </Badge>
-            <Badge
-              variant={
-                task.priority === "high"
-                  ? "destructive"
-                  : task.priority === "medium"
-                    ? "default"
-                    : "secondary"
-              }
-            >
-              {task.priority} priority
-            </Badge>
+    <div className="container mx-auto p-6 max-w-2xl">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{task.title}</CardTitle>
+          <div className="flex gap-2">
+            <Link href={`/tasks/${taskId}/edit`}>
+              <Button variant="outline" size="sm">
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+            </Link>
+            <DeleteTaskDialog
+              taskTitle={task.title}
+              onConfirm={handleDelete}
+              isLoading={deleteMutation.isPending}
+            />
           </div>
-        </div>
-      </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground">
+              Description
+            </h3>
+            <p>{task.description}</p>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{task.description}</p>
-            </CardContent>
-          </Card>
+          <div className="flex gap-4">
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">
+                Priority
+              </h3>
+              <Badge className={priorityColors[task.priority]}>
+                {task.priority}
+              </Badge>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">
+                Status
+              </h3>
+              <Badge className={statusColors[task.status]}>{task.status}</Badge>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                Subtasks ({task.subtasks.filter((s) => s.completed).length}/
-                {task.subtasks.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {task.subtasks.map((subtask) => (
-                  <div key={subtask.id} className="flex items-center gap-2">
-                    <Checkbox
-                      checked={subtask.completed}
-                      onCheckedChange={() => handleSubtaskToggle(subtask.id)}
-                    />
-                    <span
-                      className={
-                        subtask.completed
-                          ? "line-through text-muted-foreground"
-                          : ""
-                      }
-                    >
-                      {subtask.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground">
+              Project
+            </h3>
+            <p>{project?.name || "Loading..."}</p>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Comments ({task.comments.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {task.comments.length === 0 ? (
-                <p className="text-muted-foreground">No comments yet</p>
-              ) : (
-                <div className="space-y-4">
-                  {task.comments.map((comment) => (
-                    <div key={comment.id} className="border-b pb-3">
-                      <div className="flex justify-between">
-                        <p className="font-medium">{comment.author}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(comment.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <p className="text-sm mt-1">{comment.content}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground">
+              Due Date
+            </h3>
+            <p>{new Date(task.dueDate).toLocaleDateString()}</p>
+          </div>
 
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground">Project</p>
-                <p className="font-medium">{project?.name || "Loading..."}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Due Date</p>
-                <p className="font-medium">
-                  {new Date(task.dueDate).toLocaleDateString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Tags</p>
-                <div className="flex gap-1 flex-wrap mt-1">
-                  {task.tags.map((tag) => (
-                    <Badge key={tag} variant="outline">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+          {deleteMutation.isError && (
+            <p className="text-red-500">
+              Error deleting task: {deleteMutation.error.message}
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
