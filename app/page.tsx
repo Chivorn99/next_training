@@ -46,7 +46,8 @@ export default function Home() {
   }
 
   const todoTasks = tasks?.filter((t) => t.status === "todo") || [];
-  const inProgressTasks = tasks?.filter((t) => t.status === "in-progress") || [];
+  const inProgressTasks =
+    tasks?.filter((t) => t.status === "in-progress") || [];
   const doneTasks = tasks?.filter((t) => t.status === "done") || [];
 
   return (
@@ -125,7 +126,9 @@ export default function Home() {
             <Card className="hover:bg-accent cursor-pointer">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${project.color}`}></div>
+                  <div
+                    className={`w-3 h-3 rounded-full ${project.color}`}
+                  ></div>
                   <CardTitle className="text-lg">{project.name}</CardTitle>
                 </div>
               </CardHeader>

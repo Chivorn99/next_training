@@ -42,16 +42,37 @@ export async function getTasksByProject(projectId: string): Promise<Task[]> {
   return res.json();
 }
 
-export async function updateTaskStatus(
-  taskId: string,
-  status: "todo" | "in-progress" | "done"
+// Create Task
+export async function createTask(
+  task: Omit<Task, "id" | "subtasks">
 ): Promise<Task> {
-  const res = await fetch(`${API_URL}/tasks/${taskId}`, {
-    method: "PATCH",
+  const res = await fetch(`${API_URL}/tasks`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({
+      ...task,
+      subtasks: [],
+    }),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to create task");
+  }
+  return res.json();
+}
+
+// Update Task
+export async function updateTask(
+  id: string,
+  task: Partial<Task>
+): Promise<Task> {
+  const res = await fetch(`${API_URL}/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
   });
   if (!res.ok) {
     throw new Error("Failed to update task");
@@ -59,19 +80,31 @@ export async function updateTaskStatus(
   return res.json();
 }
 
-export async function updateSubtask(
+// Delete Task
+export async function deleteTask(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/tasks/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to delete task");
+  }
+}
+
+export async function updateTaskStatus(
   taskId: string,
-  subtasks: { id: string; title: string; completed: boolean }[]
-): Promise<Task> {
-  const res = await fetch(`${API_URL}/tasks/${taskId}`, {
+  status: "todo" | "in-progress" | "done"
+) {
+  const response = await fetch(`/api/tasks/${taskId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ subtasks }),
+    body: JSON.stringify({ status }),
   });
-  if (!res.ok) {
-    throw new Error("Failed to update subtask");
+
+  if (!response.ok) {
+    throw new Error("Failed to update task status");
   }
-  return res.json();
+
+  return response.json();
 }
