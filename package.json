@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "format:check": "prettier --check .",
     "lint": "eslint",
     "server": "json-server --watch db.json --port 3001"
   },
