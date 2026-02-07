@@ -71,7 +71,8 @@ export default function ProjectDetailPage({
   }
 
   const todoTasks = tasks?.filter((t) => t.status === "todo") || [];
-  const inProgressTasks = tasks?.filter((t) => t.status === "in-progress") || [];
+  const inProgressTasks =
+    tasks?.filter((t) => t.status === "in-progress") || [];
   const doneTasks = tasks?.filter((t) => t.status === "done") || [];
 
   return (

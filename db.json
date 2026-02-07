@@ -43,10 +43,7 @@
       "status": "todo",
       "priority": "high",
       "dueDate": "2025-01-20",
-      "tags": [
-        "design",
-        "accessibility"
-      ],
+      "tags": ["design", "accessibility"],
       "subtasks": [
         {
           "id": "1",
@@ -87,10 +84,7 @@
       "status": "todo",
       "priority": "medium",
       "dueDate": "2025-01-25",
-      "tags": [
-        "documentation",
-        "api"
-      ],
+      "tags": ["documentation", "api"],
       "subtasks": [
         {
           "id": "1",
@@ -113,10 +107,7 @@
       "status": "done",
       "priority": "low",
       "dueDate": "2025-01-10",
-      "tags": [
-        "research",
-        "ux"
-      ],
+      "tags": ["research", "ux"],
       "subtasks": [
         {
           "id": "1",
@@ -146,10 +137,7 @@
       "status": "in-progress",
       "priority": "high",
       "dueDate": "2025-01-22",
-      "tags": [
-        "performance",
-        "frontend"
-      ],
+      "tags": ["performance", "frontend"],
       "subtasks": [
         {
           "id": "1",
@@ -172,10 +160,7 @@
       "status": "todo",
       "priority": "medium",
       "dueDate": "2025-01-28",
-      "tags": [
-        "marketing",
-        "email"
-      ],
+      "tags": ["marketing", "email"],
       "subtasks": [
         {
           "id": "1",
@@ -198,10 +183,7 @@
       "status": "in-progress",
       "priority": "high",
       "dueDate": "2025-01-18",
-      "tags": [
-        "design",
-        "mobile"
-      ],
+      "tags": ["design", "mobile"],
       "subtasks": [
         {
           "id": "1",
@@ -236,10 +218,7 @@
       "status": "todo",
       "priority": "high",
       "dueDate": "2025-02-05",
-      "tags": [
-        "backend",
-        "database"
-      ],
+      "tags": ["backend", "database"],
       "subtasks": [
         {
           "id": "1",
@@ -262,10 +241,7 @@
       "status": "done",
       "priority": "medium",
       "dueDate": "2025-01-08",
-      "tags": [
-        "marketing",
-        "social"
-      ],
+      "tags": ["marketing", "social"],
       "subtasks": [
         {
           "id": "1",
