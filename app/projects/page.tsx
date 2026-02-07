@@ -56,7 +56,9 @@ export default function ProjectsPage() {
             <Card className="hover:bg-accent cursor-pointer h-full">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${project.color}`}></div>
+                  <div
+                    className={`w-3 h-3 rounded-full ${project.color}`}
+                  ></div>
                   <CardTitle>{project.name}</CardTitle>
                 </div>
               </CardHeader>

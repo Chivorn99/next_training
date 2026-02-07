@@ -6,17 +6,21 @@ import { taskSchema, TaskFormData } from "@/lib/schemas/task";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {Form,
+import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,} from "@/components/ui/form";
-import {Select,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,} from "@/components/ui/select";
+  SelectValue,
+} from "@/components/ui/select";
 import { Project } from "@/lib/types";
 
 interface TaskFormProps {

@@ -44,7 +44,7 @@ export async function getTasksByProject(projectId: string): Promise<Task[]> {
 
 // Create Task
 export async function createTask(
-  task: Omit<Task, "id" | "subtasks">
+  task: Omit<Task, "id" | "subtasks">,
 ): Promise<Task> {
   const res = await fetch(`${API_URL}/tasks`, {
     method: "POST",
@@ -65,7 +65,7 @@ export async function createTask(
 // Update Task
 export async function updateTask(
   id: string,
-  task: Partial<Task>
+  task: Partial<Task>,
 ): Promise<Task> {
   const res = await fetch(`${API_URL}/tasks/${id}`, {
     method: "PUT",
@@ -92,7 +92,7 @@ export async function deleteTask(id: string): Promise<void> {
 
 export async function updateTaskStatus(
   taskId: string,
-  status: "todo" | "in-progress" | "done"
+  status: "todo" | "in-progress" | "done",
 ) {
   const response = await fetch(`/api/tasks/${taskId}`, {
     method: "PATCH",
